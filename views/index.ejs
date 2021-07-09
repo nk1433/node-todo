@@ -1,0 +1,11 @@
+<form action="/todo" method="POST">
+    <label for="name">Todoname:</label>
+    <input type="text" id="name" name="name" />
+    <button>Submit</button>
+</form>
+
+<%if (todos.length > 0) { %>
+    <% todos.forEach(function(todo) { %>
+        <li><%= todo.name %></li>
+    <% }); %> 
+<% } %> 
