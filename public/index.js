@@ -1,46 +1,30 @@
-
-let tasks = [];
-let listElement = "";
-let edit = true;
-
 const formOnSubmit = async (e) => {
     e.preventDefault();
     await axios.post("/todo",{
         name: e.target.task.value
-    })
-    allTodoData();
+    });
+    fetchTodoData();
     document.querySelector("#form").reset();
 };
 
-const deleteTodo = (e) => {
-    tasks.pop(e.target.textContent);
-    if(tasks.length) {
-        createTodoList();
-    }
-    else {
-        listElement = "";
-    }
-
-    document.querySelector("#tasksList").innerHTML = listElement;
+const deleteTodo = async (todoId) => {
+    await axios.delete(`/todo/${todoId}`);
+    fetchTodoData();
 };
 
 const createTodoList = (totalTodos) => {
     let listElement = "";
-    // console.log(tasks)
     totalTodos.forEach((task) => {
-        listElement += `<li onclick="">${task.name}</li>`;
+        listElement += `<li>
+        <b>${task.name}</b>
+        <button onclick="deleteTodo(${task.id})">Delete</button>
+        </li>`;
     });
     document.querySelector("#tasksList").innerHTML = listElement;
 };
 
-const editTodo = (e) => {
-    console.log("edit!!",e);
-    console.log(e.previousElementSeblings)
-};
-
-const allTodoData = async() => {
-    // console.log("body on loaded!");
+const fetchTodoData = async () => {
     const data = await axios.get("/todo");
     const todoData = data.data.todos;
     createTodoList(todoData);
-}
+};

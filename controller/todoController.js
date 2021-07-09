@@ -39,16 +39,16 @@ exports.deleteTodo = async (req,res,next) => {
     {
         where: {
             id: {
-                [Op.eq]: req.params.category_id,
+                [Op.eq]: req.params.todo_id,
             }
         }
     }
     ).then((data) =>{
         if(data){
-            res.redirect("/")
-            // res.json({
-            //     message: "success"
-            // })
+            // res.redirect("/")
+            res.json({
+                message: "success"
+            })
         }
         else{
             res.json({
