@@ -7,12 +7,13 @@ var Op = Sequelize.Op;
 exports.createTodo = (req,res) => {
     todo.create({
         name: req.body.name
-    }).then((category) => {
-        if(category){
-            return res.redirect("/")
-            // res.json({
-            //     message: "success"
-            // })
+    }).then((todo) => {
+        if(todo){
+            // return res.redirect("/")
+            // return category
+            res.json({
+                message: "success"
+            })
         }
         else{
             res.json({
@@ -29,7 +30,8 @@ exports.allTodo = async (req,res) => {
     })
     res.json({
         todos: todos
-    })
+    });
+    // return todos
 }
 
 exports.deleteTodo = async (req,res,next) => {

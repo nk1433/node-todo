@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 5000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'public')));
 
 const db = require("./config/database");

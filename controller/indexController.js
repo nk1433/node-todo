@@ -5,9 +5,9 @@ const Sequelize = require("sequelize")
 var Op = Sequelize.Op;
 
 exports.todoForm = async (req,res) => {
-    const todos = await todo.findAll({
-    })
-    res.render("index",{
-        todos: todos
+    // const todos = await todo.findAll({
+    // })
+    res.render("home.html",{
+        // todos: todos
     })
 }
