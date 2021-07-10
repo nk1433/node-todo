@@ -57,3 +57,27 @@ exports.deleteTodo = async (req,res,next) => {
         }
     })
 }
+
+exports.updateTodo = async (req,res,next) => {
+    todo.update({
+        name: req.body.name
+    },
+    {
+        where: {
+            id: {
+                [Op.eq]: req.params.todo_id
+            }
+        }
+    }
+    )
+    .then(() => {
+        res.json({
+            message: "Success"
+        })
+    })
+    .catch((error) => {
+        res.json({
+            message: "Error"
+        })
+    })
+}
