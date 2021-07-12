@@ -1,10 +1,30 @@
-const formOnSubmit = async (e) => {
-    e.preventDefault();
+const select = document.querySelector.bind(document);
+let edit;
+
+const createTodoInDb = async (todoName) => {
     await axios.post("/todo",{
-        name: e.target.task.value
+        name: todoName
     });
+}
+
+const updateTodoInDb = async (todoName) => {
+    await axios.put(`/todo/${edit}`,{
+        name: todoName
+    })
+};
+
+const formOnSubmit = async () => {
+    const todoName = select("#task").value;
+    if(edit === undefined) {
+        await createTodoInDb(todoName);
+    }
+    else {
+        await updateTodoInDb(todoName,);
+        edit = undefined;
+        select("#submit").textContent = "Create";
+    }
     fetchTodoData();
-    document.querySelector("#form").reset();
+    select("#form").reset();
 };
 
 const deleteTodo = async (todoId) => {
@@ -12,37 +32,22 @@ const deleteTodo = async (todoId) => {
     fetchTodoData();
 };
 
-const createTodoList = (totalTodos) => {
-    let listElement = "";
-    totalTodos.forEach((todo) => {
-        listElement += `<li>
-        <b id="id_${todo.id}">${todo.name}</b>
-        <button onclick="editTodo(${todo.id})">Edit</button>
-        <button onclick="deleteTodo(${todo.id})">Delete</button>
-        </li>`;
-    });
-    document.querySelector("#tasksList").innerHTML = listElement;
-};
+const createTodoItem = (todo) => `<li>
+    <b id="id_${todo.id}">${todo.name}</b>
+    <button onclick="editTodo(${todo.id})">Edit</button>
+    <button onclick="deleteTodo(${todo.id})">Delete</button>
+    </li>`;
 
-const fetchTodoData = async () => {
-    const data = await axios.get("/todo");
-    const todoData = data.data.todos;
-    createTodoList(todoData);
-};
+const createTodoList = (totalTodos) => 
+    select("#tasksList").innerHTML = totalTodos.map(createTodoItem).join(" ");
+
+const fetchTodoData = async () => 
+    createTodoList((await axios.get("/todo")).data.todos);
 
 const editTodo = (todoId) => {
-    document.querySelector("#task").value = document.querySelector(`#id_${todoId}`).textContent;
-    document.querySelector("#submit").textContent = "Edit";
-    document.querySelector("#form").setAttribute("onsubmit",`updateToDb(event,${todoId})`);
-};
+    edit = todoId;
+    select("#submit").textContent = "Edit";
+    select("#task").value = select(`#id_${todoId}`).textContent;
+}
 
-const updateToDb = (e,todoId) => {
-    e.preventDefault();
-    axios.put(`/todo/${todoId}`,{
-        name: e.target.task.value
-    })
-    document.querySelector("#form").setAttribute("onsubmit",`formOnSubmit(event)`);
-    document.querySelector("#submit").textContent = "Create";
-    document.querySelector("#form").reset();
-    fetchTodoData();
-};
+document.addEventListener("DOMContentLoaded",fetchTodoData());
