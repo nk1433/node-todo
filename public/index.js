@@ -32,32 +32,49 @@ const deleteTodo = async (todo) => {
     fetchTodoData();
 };
 
-const createTag = (tag,text,children) => {
+const createTag = ({tag,children}) => {
     const element = document.createElement(tag);
-    if(text) {
-        const textNode = document.createTextNode(text);
-        element.appendChild(textNode);
-    }
-    if(children) {
-        children.forEach((child) => element.appendChild(child))
-    }
-    return element
+    const childrenList = children.map((child) => {
+        const childElement = document.createElement(child.tag);
+        if(child.text) {
+            const childTextNode = document.createTextNode(child.text);
+            childElement.appendChild(childTextNode);
+        }
+        if(child.events) {
+            const keys = Object.keys(child.events);
+            keys.forEach((key) => childElement.addEventListener(key,child.events[key]))
+        }
+        return childElement;
+    })
+    childrenList.forEach((child) => element.appendChild(child))
+    return element;
 } 
 
-const createEditingButton = (buttonName,todo) => {
-    const button = createTag("button",buttonName)
-    const action = buttonName === "Edit" ? editTodo : deleteTodo
-    button.addEventListener("click",() => action(todo));
-
-    return button
-}
 
 const createTodoItem = (todo) => 
-    createTag("li",false,[
-        createTag("span",todo.name),
-        createEditingButton("Delete",todo),
-        createEditingButton("Edit",todo)
-    ]);
+    createTag({
+        tag:"li",
+        children:[
+            {
+                tag: "span",
+                text: todo.name,
+            },
+            {
+                tag: "button",
+                text: "Delete",
+                events: {
+                    click: () => deleteTodo(todo)
+                }
+            },
+            {
+                tag: "button",
+                text: "Edit",
+                events: {
+                    click: () => editTodo(todo)
+                }
+            },
+        ]
+    });
 
 
 const createTodoList = (totalTodos) => {
