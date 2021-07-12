@@ -1,17 +1,15 @@
 const select = document.querySelector.bind(document);
 let edit;
 
-const createTodoInDb = async (todoName) => {
-    await axios.post("/todo",{
+const createTodoInDb = (todoName) =>
+    axios.post("/todo",{
         name: todoName
     });
-}
 
-const updateTodoInDb = async (todoName) => {
-    await axios.put(`/todo/${edit}`,{
+const updateTodoInDb =  (todoName) => 
+    axios.put(`/todo/${edit}`,{
         name: todoName
-    })
-};
+    });
 
 const formOnSubmit = async () => {
     const todoName = select("#task").value;
@@ -19,7 +17,7 @@ const formOnSubmit = async () => {
         await createTodoInDb(todoName);
     }
     else {
-        await updateTodoInDb(todoName,);
+        await updateTodoInDb(todoName);
         edit = undefined;
         select("#submit").textContent = "Create";
     }
