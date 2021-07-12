@@ -1,4 +1,6 @@
 const select = document.querySelector.bind(document);
+const create = document.createElement.bind(document);
+const text = document.createElement.bind(document);
 let edit;
 
 const createTodoInDb = (todoName) =>
@@ -25,27 +27,51 @@ const formOnSubmit = async () => {
     select("#form").reset();
 };
 
-const deleteTodo = async (todoId) => {
-    await axios.delete(`/todo/${todoId}`);
+const deleteTodo = async (todo) => {
+    await axios.delete(`/todo/${todo.id}`);
     fetchTodoData();
 };
 
-const createTodoItem = (todo) => `<li>
-    <b id="id_${todo.id}">${todo.name}</b>
-    <button onclick="editTodo(${todo.id})">Edit</button>
-    <button onclick="deleteTodo(${todo.id})">Delete</button>
-    </li>`;
+const createTag = (tag,text,children) => {
+    const element = document.createElement(tag);
+    if(text) {
+        const textNode = document.createTextNode(text);
+        element.appendChild(textNode);
+    }
+    if(children) {
+        children.forEach((child) => element.appendChild(child))
+    }
+    return element
+} 
 
-const createTodoList = (totalTodos) => 
-    select("#tasksList").innerHTML = totalTodos.map(createTodoItem).join(" ");
+const createEditingButton = (buttonName,todo) => {
+    const button = createTag("button",buttonName)
+    const action = buttonName === "Edit" ? editTodo : deleteTodo
+    button.addEventListener("click",() => action(todo));
+
+    return button
+}
+
+const createTodoItem = (todo) => 
+    createTag("li",false,[
+        createTag("span",todo.name),
+        createEditingButton("Delete",todo),
+        createEditingButton("Edit",todo)
+    ]);
+
+
+const createTodoList = (totalTodos) => {
+    select("#tasksList").innerHTML = "";
+    const totalList = totalTodos.map(createTodoItem).forEach((list) => select("#tasksList").appendChild(list));
+}
 
 const fetchTodoData = async () => 
     createTodoList((await axios.get("/todo")).data.todos);
 
-const editTodo = (todoId) => {
-    edit = todoId;
+const editTodo = (todo) => {
+    edit = todo.id;
     select("#submit").textContent = "Edit";
-    select("#task").value = select(`#id_${todoId}`).textContent;
+    select("#task").value = todo.name;
 }
 
 document.addEventListener("DOMContentLoaded",fetchTodoData());
