@@ -1,7 +1,7 @@
 {
   "development": {
     "dialect": "sqlite",
-    "storage": "path/to/database.sqlite"
+    "storage": "database.sqlite"
   },
   "test": {
     "username": "root",

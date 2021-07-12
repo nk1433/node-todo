@@ -8,12 +8,6 @@ app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'public')));
 
-const db = require("./config/database");
-db.authenticate()
-.then(() => console.log("Database connected"))
-.catch((err) => console.log("Error"+err))
-
-
 const todoRouter = require("./router/todoRouter");
 const indexRouter = require("./router/indexRouter");
 
