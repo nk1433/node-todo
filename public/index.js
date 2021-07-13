@@ -32,21 +32,19 @@ const deleteTodo = async (todo) => {
     fetchTodoData();
 };
 
-const createTag = ({tag,children}) => {
+const createTag = ({tag,text,events,children}) => {
     const element = document.createElement(tag);
-    const childrenList = children.map((child) => {
-        const childElement = document.createElement(child.tag);
-        if(child.text) {
-            const childTextNode = document.createTextNode(child.text);
-            childElement.appendChild(childTextNode);
-        }
-        if(child.events) {
-            const keys = Object.keys(child.events);
-            keys.forEach((key) => childElement.addEventListener(key,child.events[key]))
-        }
-        return childElement;
-    })
-    childrenList.forEach((child) => element.appendChild(child))
+    if(text) {
+        const textNode = document.createTextNode(text);
+        element.appendChild(textNode);
+    }
+    if(events) {
+        const keys = Object.keys(events);
+        keys.forEach((key) => element.addEventListener(key,events[key]));
+    }
+    if(children) {
+        children.forEach((child) => element.appendChild(createTag(child)));
+    }
     return element;
 } 
 
@@ -79,7 +77,8 @@ const createTodoItem = (todo) =>
 
 const createTodoList = (totalTodos) => {
     select("#tasksList").innerHTML = "";
-    const totalList = totalTodos.map(createTodoItem).forEach((list) => select("#tasksList").appendChild(list));
+    const totalList = totalTodos.map(createTodoItem).forEach((list) =>
+     select("#tasksList").appendChild(list));
 }
 
 const fetchTodoData = async () => 
