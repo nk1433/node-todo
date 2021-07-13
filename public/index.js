@@ -32,21 +32,27 @@ const deleteTodo = async (todo) => {
     fetchTodoData();
 };
 
-const createTag = ({tag,text,events,children}) => {
-    const element = document.createElement(tag);
-    if(text) {
-        const textNode = document.createTextNode(text);
-        element.appendChild(textNode);
-    }
-    if(events) {
-        const keys = Object.keys(events);
-        keys.forEach((key) => element.addEventListener(key,events[key]));
-    }
-    if(children) {
-        children.forEach((child) => element.appendChild(createTag(child)));
-    }
+const actions = {
+
+    text: (element, text) => 
+        element.appendChild(document.createTextNode(text)),
+
+    events: (element, events) => 
+        Object.keys(events).forEach((key) => element.addEventListener(key, events[key])),
+
+    children: (element, children) => 
+        children.forEach((child) => element.appendChild(createTag(child))),
+};
+
+const keywords = Object.keys(actions)
+
+const createTag = (props) => {
+    const element = document.createElement(props.tag);
+    Object.keys(props).filter((key) => keywords.indexOf(key) !== -1)
+        .forEach((keyword) => actions[keyword](element,props[keyword]));
+
     return element;
-} 
+};
 
 
 const createTodoItem = (todo) => 
@@ -91,3 +97,4 @@ const editTodo = (todo) => {
 }
 
 document.addEventListener("DOMContentLoaded",fetchTodoData());
+
