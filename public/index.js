@@ -41,7 +41,7 @@ const actions = {
         Object.keys(events).forEach((key) => element.addEventListener(key, events[key])),
 
     children: (element, children) => 
-        children.forEach((child) => element.appendChild(createTag(child))),
+        children.forEach((child) => element.appendChild(htmlTree(child))),
 
     attr: (element, attr) => 
         Object.keys(attr).forEach((key) => element.setAttribute(key, attr[key])),
@@ -49,16 +49,8 @@ const actions = {
 
 const keywords = Object.keys(actions)
 
-const createTag = (props) => {
-    const element = document.createElement(props.tag);
-    Object.keys(props).filter((key) => keywords.indexOf(key) !== -1)
-        .forEach((keyword) => actions[keyword](element,props[keyword]));
-
-    return element;
-};
-
 const createTodoItem = (todo) => 
-    createTag({
+    htmlTree({
         tag:"li",
         attr: {
             class: "todo",
