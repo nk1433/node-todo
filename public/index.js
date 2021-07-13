@@ -42,6 +42,9 @@ const actions = {
 
     children: (element, children) => 
         children.forEach((child) => element.appendChild(createTag(child))),
+
+    attr: (element, attr) => 
+        Object.keys(attr).forEach((key) => element.setAttribute(key, attr[key])),
 };
 
 const keywords = Object.keys(actions)
@@ -54,10 +57,12 @@ const createTag = (props) => {
     return element;
 };
 
-
 const createTodoItem = (todo) => 
     createTag({
         tag:"li",
+        attr: {
+            class: "todo",
+        },
         children:[
             {
                 tag: "span",
